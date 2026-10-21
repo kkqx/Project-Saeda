@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" shape-rendering="crispEdges">
+  <rect width="128" height="128" fill="#1a1730"/>
+  <rect x="8" y="8" width="112" height="112" fill="#2a2450"/>
+  <!-- cristal: losango azul -> rosa -->
+  <polygon points="64,14 100,64 64,114 28,64" fill="#e24d8f"/>
+  <polygon points="64,14 28,64 64,114" fill="#2a56c8"/>
+  <polygon points="64,14 64,64 100,64" fill="#f06aa6"/>
+  <polygon points="64,64 28,64 64,114" fill="#3d73e0"/>
+  <path d="M64 14 L100 64 L64 114 L28 64 Z" fill="none" stroke="#ffffff" stroke-width="3"/>
+  <path d="M64 14 L52 64 L64 114 M64 14 L76 64 L64 114" fill="none" stroke="#ffffff" stroke-opacity="0.6" stroke-width="2"/>
+  <!-- S de Saeda -->
+  <path d="M78 44 H52 V62 H76 V82 H48" fill="none" stroke="#fff3e0" stroke-width="8" stroke-linejoin="miter"/>
+</svg>

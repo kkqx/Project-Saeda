@@ -4,10 +4,10 @@ extends Node2D
 
 const TILE := 8
 const COLORS := {
-	0: [Color("6f7a3e"), Color("a9b565")],    # praia: capim seco
+	0: [Color("7c7a3e"), Color("c4b86a")],    # praia: capim seco
 	1: [Color("3d5e3c"), Color("6f9a5a")],    # torres: musgo
 	2: [Color("4a7d44"), Color("9acb6a")],    # pontes: verde vivo
-	3: [Color("2f5a52"), Color("5fa090")],    # cidade: verde frio
+	3: [Color("244d52"), Color("5fb0a0")],    # cidade: verde frio
 }
 
 var level: Node

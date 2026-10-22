@@ -52,6 +52,7 @@ var finished := false
 var _finished_at_ms := 0
 var _shake := 0.0
 var _hints: Array[String] = []
+var _last_tick := -1
 var _hint_labels: Array[Label] = []
 var _tile_scene: Node        # cena TileMap carregada (se a fase for .tscn)
 var _solid_body: StaticBody2D
@@ -114,6 +115,10 @@ func _process(delta: float) -> void:
 	_bg_sprite.position = Vector2(-(c.x - 160.0) * BG_PARALLAX, -14.0 - (c.y - 90.0) * _bg_py)
 
 	_update_hints()
+
+	# R: volta ao último checkpoint (útil se o poder acabar e você ficar preso)
+	if Input.is_action_just_pressed("retry") and not finished and not _leaving and player != null and not player.dead:
+		player.die()
 
 	# contador de memórias aparece só um instante
 	if _berry_timer > 0.0:
@@ -542,7 +547,7 @@ func _on_collected(kind: String, node: Node) -> void:
 	match kind:
 		"strawberry":
 			strawberries += 1
-			Sfx.play("berry")
+			Sfx.play("memoria")
 			add_shake(1.0)
 			_puff(node.position, 12, Color("7cc4ff"), 50.0)
 			if _crown != null:
@@ -655,7 +660,8 @@ func _cat_ending(cat: Node) -> void:
 	tw.tween_interval(1.4)
 	tw.tween_callback(func() -> void:
 		cat.cat_happy = true
-		Sfx.play("unlock", -4.0, 1.4)
+		Sfx.play("miau")
+		Sfx.play("unlock", -8.0, 1.4)
 		_puff(cat.position + Vector2(0, -8), 14, Color("9fd0ff"), 45.0))
 	tw.tween_property(cat, "position", player.position + Vector2(6, 0), 0.7).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tw.tween_callback(func() -> void:
@@ -855,6 +861,10 @@ func _update_power(delta: float) -> void:
 	_power_label.add_theme_color_override("font_color", col)
 	_power_box.modulate.a = 1.0
 	if Game.power_left > 0.0 and Game.power_left < 5.0:
+		var sec := ceili(Game.power_left)
+		if sec != _last_tick:
+			_last_tick = sec
+			Sfx.play("tique", -6.0, 1.0 + (5 - sec) * 0.06)
 		_power_box.modulate.a = 0.6 + 0.4 * sin(Time.get_ticks_msec() * 0.016)
 	var on := Game.power_left > 0.0
 	if _power_was_on and not on:
@@ -868,7 +878,7 @@ func _power_out() -> void:
 	Sfx.play("death", -10.0, 0.6)
 	add_shake(1.0)
 	_puff(player.position + Vector2(0, -9), 18, Color("5dff8a"), 40.0)
-	_power_msg.text = "O poder se esgotou... ache uma memória verde"
+	_power_msg.text = "O poder acabou: ache uma memória verde ou aperte R"
 	_power_msg.modulate.a = 1.0
 	_power_label.text = "0"
 
@@ -878,8 +888,7 @@ func _awaken_again(node: Node) -> void:
 	Game.power_left = Game.POWER_TIME
 	_power_was_on = true
 	_power_msg.modulate.a = 0.0
-	Sfx.play("finish", -6.0, 1.3)
-	Sfx.play("unlock", -4.0, 1.6)
+	Sfx.play("verde")
 	add_shake(2.0)
 	_puff(node.global_position, 24, Color("5dff8a"), 70.0)
 	if _aura != null and _aura.has_method("burst"):

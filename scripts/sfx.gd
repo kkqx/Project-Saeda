@@ -16,6 +16,12 @@ const SOUNDS := {
 	"select": preload("res://assets/audio/select.wav"),
 	"confirm": preload("res://assets/audio/confirm.wav"),
 	"unlock": preload("res://assets/audio/unlock.wav"),
+	"memoria": preload("res://assets/audio/memoria.wav"),
+	"verde": preload("res://assets/audio/verde.wav"),
+	"miau": preload("res://assets/audio/miau.wav"),
+	"boing": preload("res://assets/audio/boing.wav"),
+	"tique": preload("res://assets/audio/tique.wav"),
+	"creditos": preload("res://assets/audio/creditos.wav"),
 }
 const TRACKS := {
 	"dusty": preload("res://assets/music/dusty_horizon.ogg"),
@@ -54,7 +60,17 @@ func _ready() -> void:
 func play_music(track: String, fade_in := 1.5) -> void:
 	if not TRACKS.has(track) or (_track == track and _music.playing):
 		return
+	var had_music := _music.playing
 	_track = track
+	if had_music:
+		# transição suave: a música atual some e a nova entra
+		var tw := create_tween()
+		tw.tween_property(self, "_fade_db", -40.0, 0.6)
+		tw.tween_callback(func() -> void:
+			_music.stream = TRACKS[track]
+			_music.play())
+		tw.tween_property(self, "_fade_db", 0.0, maxf(fade_in, 0.8))
+		return
 	_music.stream = TRACKS[track]
 	_music.play()
 	if fade_in > 0.0:

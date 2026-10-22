@@ -8,6 +8,7 @@ const HAIR := preload("res://assets/title/title_hair.png")
 const LOGO := preload("res://assets/title/title_logo.png")
 const FLORES := preload("res://assets/title/title_flores.png")
 const FAIRY := preload("res://assets/sprites/fairy_blue.png")
+const SERIF := preload("res://assets/fonts/Lora.ttf")
 const SWAY_SHADER := preload("res://shaders/portrait_sway.gdshader")
 const HAIR_SHADER := preload("res://shaders/hair_sway.gdshader")
 
@@ -246,6 +247,8 @@ func _build_fade() -> void:
 
 
 func _style_label(lab: Label, size: int) -> void:
+	if _novo:
+		lab.add_theme_font_override("font", SERIF)
 	lab.add_theme_font_size_override("font_size", size)
 	lab.add_theme_constant_override("outline_size", 3)
 	lab.add_theme_color_override("font_outline_color", Color(0.05, 0.03, 0.1, 0.95))

@@ -15,6 +15,7 @@ var fade_time := 0.05           # duração do crossfade entre poses
 var face := 1
 var squash := Vector2.ONE
 var lean := 0.0                 # radianos, no sentido da tela (positivo = horário)
+var sway := 0.0                 # balanço lateral do tronco/cabelo no passo
 var bob := 0.0                  # px que o corpo sobe (balanço do passo)
 var tint := Color.WHITE
 
@@ -55,6 +56,7 @@ func _draw() -> void:
 	_mat.set_shader_parameter("tex_b", b)
 	_mat.set_shader_parameter("mix_amount", t)
 	_mat.set_shader_parameter("tint", tint)
+	_mat.set_shader_parameter("sway", sway)
 	draw_set_transform(Vector2(0.0, -bob), lean, Vector2(face * squash.x, squash.y))
 	draw_texture_rect(a, Rect2(-frame_w * 0.5 * s, -(frame_h - feet_pad) * s, frame_w * s, frame_h * s), false, Color.WHITE)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

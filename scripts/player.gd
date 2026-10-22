@@ -453,6 +453,7 @@ func _update_anim(delta: float) -> void:
 
 	var run_ratio := clampf(absf(velocity.x) / max_run, 0.0, 1.3)
 	var bob := 0.0
+	var walk_sway := 0.0
 	if state == State.DASH or not is_on_floor():
 		_frame_name = "jump"
 	elif _land_timer > 0.0:
@@ -468,6 +469,7 @@ func _update_anim(delta: float) -> void:
 				Sfx.play("step", -12.0, randf_range(0.9, 1.1))
 		_frame_name = WALK_CYCLE[_walk_i]
 		bob = 0.9 * absf(sin(_walk_phase)) * clampf(run_ratio, 0.0, 1.0)   # corpo sobe e desce a cada passo
+		walk_sway = 0.016 * sin(_walk_phase * 0.5) * clampf(run_ratio, 0.0, 1.0)
 	else:
 		_walk_i = 0
 		_walk_timer = 0.0
@@ -505,6 +507,7 @@ func _update_anim(delta: float) -> void:
 		_body.squash = sq
 		_body.lean = _lean
 		_body.bob = bob
+		_body.sway = walk_sway
 		_body.tint = Color.WHITE if dashes_left > 0 else TINT_NO_DASH
 		_body.advance(delta)
 

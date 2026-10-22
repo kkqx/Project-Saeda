@@ -57,7 +57,7 @@ func _try_bounce(body: Node) -> void:
 	_cooldown = 0.25
 	_squash = 1.0
 	body.bounce(BOUNCE_SPEED)
-	Sfx.play("crystal", -2.0, 1.4)
+	Sfx.play("boing", -2.0)
 	for i in 8:
 		_spores.append({"p": Vector2(randf_range(-4, 4), -9.0), "v": Vector2(randf_range(-22, 22), randf_range(-50, -20)), "life": 0.0})
 

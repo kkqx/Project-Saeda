@@ -10,6 +10,7 @@ func _ready() -> void:
 	_add_action("move_up", [KEY_UP, KEY_W], [JOY_BUTTON_DPAD_UP], JOY_AXIS_LEFT_Y, -1.0)
 	_add_action("move_down", [KEY_DOWN, KEY_S], [JOY_BUTTON_DPAD_DOWN], JOY_AXIS_LEFT_Y, 1.0)
 	_add_action("jump", [KEY_Z, KEY_SPACE, KEY_K], [JOY_BUTTON_A])
+	_add_action("retry", [KEY_R], [JOY_BUTTON_Y])
 	_add_action("dash", [KEY_X, KEY_SHIFT, KEY_J], [JOY_BUTTON_X, JOY_BUTTON_B])
 
 

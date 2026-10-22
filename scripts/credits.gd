@@ -6,6 +6,7 @@ const BG := preload("res://assets/bg/bg_montanha.png")
 const STAND := preload("res://assets/intro/wake_4_stand.png")
 const CAT := preload("res://assets/cat/cat.png")
 const LOGO := preload("res://assets/title/logo_flores.png")
+const SERIF := preload("res://assets/fonts/Lora.ttf")
 
 # ["título", "nome"]  ·  título vazio = só uma linha de texto  ·  ["", ""] = espaço
 const CREDITS := [
@@ -48,6 +49,7 @@ func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	Sfx.play_music("dusty", 2.0)
+	Sfx.play("creditos", -6.0)
 	var sky := ColorRect.new()
 	sky.color = Color("4e3a68")
 	sky.size = Vector2(320, 180)
@@ -175,6 +177,7 @@ func _label(text: String, size: int, col: Color) -> Label:
 	lab.text = text
 	lab.size = Vector2(LEFT_W, 20)
 	lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lab.add_theme_font_override("font", SERIF)
 	lab.add_theme_font_size_override("font_size", size)
 	lab.add_theme_constant_override("outline_size", 3)
 	lab.add_theme_color_override("font_outline_color", Color(0.04, 0.03, 0.1, 0.95))

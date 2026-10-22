@@ -147,3 +147,6 @@ Ao pegar uma memória verde, toca `scripts/persona_flash.gd` (menos de 1 s): a t
 ## Créditos e fases
 - Créditos: logo nova (`assets/title/logo_flores.png`) no lugar do texto "PROJECT SAEDA"; removidas as linhas com nomes de autoria.
 - Fases: sem o banner com o nome da fase e sem dicas de texto, exceto na primeira fase (Praia), que mostra só os comandos básicos: andar e dash.
+
+## Resolução
+Janela base 1280x720; a escala agora é fracionada, então a imagem preenche a tela (tela cheia ou janela redimensionada) sem barras pretas laterais. Só sobram barras se a tela não for 16:9.

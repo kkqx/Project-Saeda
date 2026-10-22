@@ -31,6 +31,7 @@ func _ready() -> void:
 		{"id": "infinite_dash", "name": "DASH INFINITO"},
 		{"id": "speed", "name": "VELOCIDADE"},
 		{"id": "title_style", "name": "TELA INICIAL"},
+		{"id": "keys", "name": "TECLAS"},
 		{"id": "back", "name": "VOLTAR"},
 	]
 	for i in _rows.size():
@@ -136,5 +137,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		if _rows[_selected]["id"] == "back":
 			Sfx.play("confirm")
 			close()
+		elif _rows[_selected]["id"] == "keys":
+			Sfx.play("confirm")
+			add_child(preload("res://scripts/keys_menu.gd").new())
 		else:
 			_change(1)

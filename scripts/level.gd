@@ -53,6 +53,19 @@ var _finished_at_ms := 0
 var _shake := 0.0
 var _hints: Array[String] = []
 var _last_tick := -1
+# paleta usada pelo desenho por código (fase da montanha muda estas cores)
+var _p_concrete := COL_CONCRETE
+var _p_concrete_dark := COL_CONCRETE_DARK
+var _p_concrete_light := COL_CONCRETE_LIGHT
+var _p_crack := COL_CRACK
+var _p_rust := COL_RUST
+var _p_rust_light := COL_RUST_LIGHT
+var _p_rust_dark := COL_RUST_DARK
+var _p_moss := COL_MOSS
+var _p_moss_dark := COL_MOSS_DARK
+
+var _grass: Node2D
+var _ambient: CanvasLayer
 var _hint_labels: Array[Label] = []
 var _tile_scene: Node        # cena TileMap carregada (se a fase for .tscn)
 var _solid_body: StaticBody2D
@@ -87,10 +100,23 @@ func _ready() -> void:
 	level_path = Game.current_level_path()
 	if not _load_level():
 		return
+	if Game.current == 4:
+		_p_concrete = Color("5b4a7a")
+		_p_concrete_dark = Color("3c3158")
+		_p_concrete_light = Color("7d6aa0")
+		_p_crack = Color("241c3a")
+		_p_rust = Color("e0708f")
+		_p_rust_light = Color("ffc0d0")
+		_p_rust_dark = Color("6b2e4a")
+		_p_moss = Color("e8b9c8")
+		_p_moss_dark = Color("b98ca8")
 	_build_background()
 	_build_world()
+	_grass = preload("res://scripts/grass_sway.gd").new()
+	add_child(_grass)
 	_spawn_player()
 	_build_camera()
+	_build_ambient()
 	_build_atmosphere()
 	_build_hud()
 	_build_hints()
@@ -201,6 +227,11 @@ func _load_tile_level() -> bool:
 				child.visible = false
 		elif child.name == "Dicas":
 			child.visible = false
+	# arte do chão própria de cada fase (mesma grade de tiles, outra textura)
+	var ts: TileSet = load("res://assets/tiles/tileset.tres")
+	var src := ts.get_source(0) as TileSetAtlasSource
+	var themed := "res://assets/tiles/tileset_%d.png" % Game.current
+	src.texture = load(themed) if ResourceLoader.exists(themed) else load("res://assets/tiles/tileset.png")
 	add_child(_tile_scene)
 	move_child(_tile_scene, 0)
 	return true
@@ -386,6 +417,16 @@ func _build_background() -> void:
 	_bg_sprite.position = Vector2(0, -14)
 	_bg_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	layer.add_child(_bg_sprite)
+	var bgfx := preload("res://scripts/bg_fx.gd").new()
+	_bg_sprite.add_child(bgfx)
+
+
+## Vento, partículas, raios de luz e matinho balançando (muda em cada fase).
+func _build_ambient() -> void:
+	_ambient = preload("res://scripts/ambient_fx.gd").new()
+	add_child(_ambient)
+	_ambient.setup(self)
+	_grass.setup(self, _ambient)
 
 
 func _build_atmosphere() -> void:
@@ -489,7 +530,14 @@ func _build_hints() -> void:
 	# Sem textos nas fases, exceto na primeira (praia): só os comandos básicos.
 	if Game.current != 0:
 		return
-	_hints = ["3,21,Setas / A D: andar", "33,21,X / Shift: DASH", "33,22,Segure uma direção e aperte X"]
+	var walk_txt := "Setas / A D"
+	var dash_txt := "X / Shift"
+	var dash_key := "X"
+	if not Settings.key_map.is_empty():
+		walk_txt = "%s / %s" % [Settings.key_name("move_left"), Settings.key_name("move_right")]
+		dash_txt = Settings.key_name("dash")
+		dash_key = dash_txt
+	_hints = ["3,21,%s: andar" % walk_txt, "33,21,%s: DASH" % dash_txt, "33,22,Segure uma direção e aperte %s" % dash_key]
 	for hint in _hints:
 		var parts := hint.split(",", true, 2)
 		if parts.size() < 3:
@@ -756,55 +804,55 @@ func _draw_solid(x: int, y: int, pos: Vector2) -> void:
 	for k in range(1, 4):
 		if _is_solid(x, y - k):
 			depth += 1
-	var base := COL_CONCRETE.lerp(COL_CONCRETE_DARK, depth / 3.0 * 0.85)
+	var base := _p_concrete.lerp(_p_concrete_dark, depth / 3.0 * 0.85)
 	if h % 5 == 0:
 		base = base.lightened(0.05)
 	draw_rect(Rect2(pos, Vector2(TILE, TILE)), base)
 
 	# placas de concreto: junta horizontal a cada 2 blocos de altura
 	if y % 2 == 0 and _is_solid(x, y - 1):
-		draw_rect(Rect2(pos, Vector2(TILE, 1)), COL_CRACK)
+		draw_rect(Rect2(pos, Vector2(TILE, 1)), _p_crack)
 	# rachaduras e ferragem exposta
 	if h % 7 == 0:
-		draw_rect(Rect2(pos + Vector2(2, 2), Vector2(1, 2)), COL_CRACK)
-		draw_rect(Rect2(pos + Vector2(3, 4), Vector2(1, 2)), COL_CRACK)
-		draw_rect(Rect2(pos + Vector2(4, 6), Vector2(1, 1)), COL_CRACK)
+		draw_rect(Rect2(pos + Vector2(2, 2), Vector2(1, 2)), _p_crack)
+		draw_rect(Rect2(pos + Vector2(3, 4), Vector2(1, 2)), _p_crack)
+		draw_rect(Rect2(pos + Vector2(4, 6), Vector2(1, 1)), _p_crack)
 	elif h % 23 == 0:
-		draw_rect(Rect2(pos + Vector2(3, 1), Vector2(1, 5)), COL_RUST)
-		draw_rect(Rect2(pos + Vector2(3, 1), Vector2(1, 1)), COL_RUST_LIGHT)
+		draw_rect(Rect2(pos + Vector2(3, 1), Vector2(1, 5)), _p_rust)
+		draw_rect(Rect2(pos + Vector2(3, 1), Vector2(1, 1)), _p_rust_light)
 
 	# bordas
 	if not _is_solid(x - 1, y):
-		draw_rect(Rect2(pos, Vector2(1, TILE)), COL_CONCRETE_LIGHT)
+		draw_rect(Rect2(pos, Vector2(1, TILE)), _p_concrete_light)
 	if not _is_solid(x + 1, y):
-		draw_rect(Rect2(pos + Vector2(TILE - 1, 0), Vector2(1, TILE)), COL_CRACK)
+		draw_rect(Rect2(pos + Vector2(TILE - 1, 0), Vector2(1, TILE)), _p_crack)
 	if not _is_solid(x, y + 1):
-		draw_rect(Rect2(pos + Vector2(0, TILE - 1), Vector2(TILE, 1)), COL_CRACK)
+		draw_rect(Rect2(pos + Vector2(0, TILE - 1), Vector2(TILE, 1)), _p_crack)
 
 	# musgo por cima das superfícies
 	if not _is_solid(x, y - 1):
-		draw_rect(Rect2(pos, Vector2(TILE, 2)), COL_MOSS)
-		draw_rect(Rect2(pos + Vector2(0, 2), Vector2(TILE, 1)), COL_MOSS_DARK)
+		draw_rect(Rect2(pos, Vector2(TILE, 2)), _p_moss)
+		draw_rect(Rect2(pos + Vector2(0, 2), Vector2(TILE, 1)), _p_moss_dark)
 		if h % 3 == 0:
-			draw_rect(Rect2(pos + Vector2(h % 6, -1), Vector2(1, 1)), COL_MOSS)
+			draw_rect(Rect2(pos + Vector2(h % 6, -1), Vector2(1, 1)), _p_moss)
 		if h % 4 == 1:
-			draw_rect(Rect2(pos + Vector2((h >> 3) % 7, 3), Vector2(1, 2)), COL_MOSS_DARK)
+			draw_rect(Rect2(pos + Vector2((h >> 3) % 7, 3), Vector2(1, 2)), _p_moss_dark)
 	# musgo pendurado nas laterais de vez em quando
 	elif not _is_solid(x - 1, y) and h % 6 == 0:
-		draw_rect(Rect2(pos + Vector2(1, 1), Vector2(1, 3)), COL_MOSS_DARK)
+		draw_rect(Rect2(pos + Vector2(1, 1), Vector2(1, 3)), _p_moss_dark)
 
 
 func _draw_spike(_x: int, _y: int, pos: Vector2) -> void:
 	# barra de base
-	draw_rect(Rect2(pos + Vector2(0, 7), Vector2(TILE, 1)), COL_RUST_DARK)
+	draw_rect(Rect2(pos + Vector2(0, 7), Vector2(TILE, 1)), _p_rust_dark)
 	for i in 2:
 		var o := pos + Vector2(i * 4, 0)
 		draw_colored_polygon(PackedVector2Array([
 			o + Vector2(0, 7), o + Vector2(2, 2), o + Vector2(4, 7)
-		]), COL_RUST)
+		]), _p_rust)
 		draw_colored_polygon(PackedVector2Array([
 			o + Vector2(0.5, 7), o + Vector2(2, 2), o + Vector2(2, 7)
-		]), COL_RUST_LIGHT)
+		]), _p_rust_light)
 		draw_rect(Rect2(o + Vector2(1.5, 1), Vector2(1, 1)), Color("f6c9a0"))
 
 

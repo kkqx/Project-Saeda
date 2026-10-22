@@ -152,10 +152,13 @@ Ao pegar uma memória verde, toca `scripts/persona_flash.gd` (menos de 1 s): a t
 Janela base 1280x720; a escala agora é fracionada, então a imagem preenche a tela (tela cheia ou janela redimensionada) sem barras pretas laterais. Só sobram barras se a tela não for 16:9.
 
 ## Sons, fonte
-- Sons novos (gerados por código, `assets/audio/`): `memoria` (pegar memória azul), `verde` (despertar), `miau`, `boing` (planta), `tique` (contagem final), `creditos`. A música agora troca com transição suave (fade out/in).
+- Sons novos (gerados por código, `assets/audio/`): `memoria` (pegar memória azul), `verde` (vidro quebrando ao pegar a memória verde), `miau`, `boing` (planta), `tique` (contagem final), `creditos`. A música agora troca com transição suave (fade out/in).
 - Fonte serifada Lora (licença OFL, `assets/fonts/Lora.ttf`) na tela inicial nova e nos créditos.
 
 ## Tecla R e fase final
 - **R** (ou botão Y do controle): volta ao último checkpoint em qualquer fase. Na fase final, se o poder acabar e você ficar preso, é a saída; ao reaparecer o poder volta a 20 s.
 - A fase final foi percorrida do início ao fim por um robô, sem mortes: cada trecho entre memórias verdes usa de 5 a 8 s dos 20 s.
 - Caminhada: o tronco/cabelo e a saia balançam levemente a cada passo (parâmetro `sway` em `shaders/pose_blend.gdshader`).
+
+## Ícone e abertura
+O ícone do projeto (lista de projetos da Godot, janela e .exe) é `icon.png`, feito com a logo. A tela de abertura da Godot usa `assets/title/splash.png`.

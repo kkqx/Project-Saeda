@@ -489,7 +489,14 @@ func _build_hints() -> void:
 	# Sem textos nas fases, exceto na primeira (praia): só os comandos básicos.
 	if Game.current != 0:
 		return
-	_hints = ["3,21,Setas / A D: andar", "33,21,X / Shift: DASH", "33,22,Segure uma direção e aperte X"]
+	var walk_txt := "Setas / A D"
+	var dash_txt := "X / Shift"
+	var dash_key := "X"
+	if not Settings.key_map.is_empty():
+		walk_txt = "%s / %s" % [Settings.key_name("move_left"), Settings.key_name("move_right")]
+		dash_txt = Settings.key_name("dash")
+		dash_key = dash_txt
+	_hints = ["3,21,%s: andar" % walk_txt, "33,21,%s: DASH" % dash_txt, "33,22,Segure uma direção e aperte %s" % dash_key]
 	for hint in _hints:
 		var parts := hint.split(",", true, 2)
 		if parts.size() < 3:

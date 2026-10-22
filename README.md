@@ -162,3 +162,6 @@ Janela base 1280x720; a escala agora é fracionada, então a imagem preenche a t
 
 ## Ícone e abertura
 O ícone do projeto (lista de projetos da Godot, janela e .exe) é `icon.png`, feito com a logo. A tela de abertura da Godot usa `assets/title/splash.png`.
+
+## Teclas
+Em **OPÇÕES → TECLAS** dá para trocar as teclas de andar, pular, dash e voltar ao checkpoint (`scripts/keys_menu.gd`). Se a tecla escolhida já é de outra ação, as duas trocam. As escolhas ficam salvas em `user://settings.cfg`; "Restaurar padrão" volta tudo. O controle (joystick) não muda.

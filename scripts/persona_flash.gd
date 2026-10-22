@@ -95,7 +95,7 @@ func _process(_d: float) -> void:
 	_band.size = Vector2(320, maxf(h, 0.0))
 	_band.position = Vector2(0, 90.0 - h * 0.5)
 	_face.position.y = h * 0.5 - EYE_MID.y * _face.scale.y
-	_bg.modulate.a = clampf(t / 0.05, 0.0, 1.0) * (1.0 - close)
+	_bg.modulate.a = 0.0   # sem fundo preto: o jogo continua visível
 	_update_face(clampf(t / DURATION, 0.0, 1.0))
 	_face.position.y = h * 0.5 - EYE_MID.y * _face.scale.y
 	# clarão de entrada e de saída

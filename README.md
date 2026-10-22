@@ -161,7 +161,7 @@ Janela base 1280x720; a escala agora é fracionada, então a imagem preenche a t
 - Caminhada: o tronco/cabelo e a saia balançam levemente a cada passo (parâmetro `sway` em `shaders/pose_blend.gdshader`).
 
 ## Ícone e abertura
-O ícone do projeto (lista de projetos da Godot, janela e .exe) é `icon.png`, feito com a logo. A tela de abertura da Godot usa `assets/title/splash.png`.
+O ícone do projeto (lista de projetos da Godot, janela e .exe) é `icon.png`, feito com a logo. A tela de abertura da Godot (boot splash) está desligada.
 
 ## Teclas
 Em **OPÇÕES → TECLAS** dá para trocar as teclas de andar, pular, dash e voltar ao checkpoint (`scripts/keys_menu.gd`). Se a tecla escolhida já é de outra ação, as duas trocam. As escolhas ficam salvas em `user://settings.cfg`; "Restaurar padrão" volta tudo. O controle (joystick) não muda.
@@ -174,3 +174,6 @@ Em **OPÇÕES → TECLAS** dá para trocar as teclas de andar, pular, dash e vol
 ## Arte das fases
 - Chão com arte própria em cada fase (`assets/tiles/tileset_0..3.png`, mesma grade do `tileset.png`; o jogo troca a textura ao entrar na fase): Praia = arenito com capim seco, Torres = pedra violeta com musgo e rebites, Pontes = concreto com mato vivo e raízes, Cidade = pedra azul-noite com rachaduras de luz ciano. A Montanha (desenhada por código em `level.gd`, variáveis `_p_*`) usa rocha roxa com topo rosado e espinhos de cristal rosa.
 - Fundo animado (`scripts/bg_fx.gd`): estrelas piscando, sol/lua pulsando, brilho do mar e gaivotas (praia, pontes), luzes de aviso piscando nas torres, relâmpago distante (cidade) e estrela cadente (torres, montanha). As posições vêm de `assets/bg/bg_fx.json`.
+
+## Parallax em camadas
+`scripts/parallax_layers.gd` acrescenta por fase 3 faixas de silhuetas que repetem na horizontal (a = mais longe, c = mais perto, cada uma anda mais rápido) e uma camada na frente do cenário (cipós, cabos, névoa) que anda mais rápido que o chão. As imagens ficam em `assets/bg/layers/<fase>_<a|b|c|fg>.png` (512 px de largura, emendam nas bordas). Os fatores de velocidade estão em `CFG` no script.

@@ -65,6 +65,7 @@ var _p_moss := COL_MOSS
 var _p_moss_dark := COL_MOSS_DARK
 
 var _grass: Node2D
+var _parallax: Node
 var _ambient: CanvasLayer
 var _hint_labels: Array[Label] = []
 var _tile_scene: Node        # cena TileMap carregada (se a fase for .tscn)
@@ -139,6 +140,7 @@ func _process(delta: float) -> void:
 	# fundo em parallax
 	var c := camera.get_screen_center_position()
 	_bg_sprite.position = Vector2(-(c.x - 160.0) * BG_PARALLAX, -14.0 - (c.y - 90.0) * _bg_py)
+	_parallax.update(c)
 
 	_update_hints()
 
@@ -419,6 +421,9 @@ func _build_background() -> void:
 	layer.add_child(_bg_sprite)
 	var bgfx := preload("res://scripts/bg_fx.gd").new()
 	_bg_sprite.add_child(bgfx)
+	_parallax = preload("res://scripts/parallax_layers.gd").new()
+	add_child(_parallax)
+	_parallax.setup(layer, self)
 
 
 ## Vento, partículas, raios de luz e matinho balançando (muda em cada fase).

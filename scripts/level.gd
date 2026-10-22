@@ -66,6 +66,7 @@ var _p_moss_dark := COL_MOSS_DARK
 
 var _grass: Node2D
 var _parallax: Node
+var _par_extra: Node
 var _ambient: CanvasLayer
 var _hint_labels: Array[Label] = []
 var _tile_scene: Node        # cena TileMap carregada (se a fase for .tscn)
@@ -141,6 +142,7 @@ func _process(delta: float) -> void:
 	var c := camera.get_screen_center_position()
 	_bg_sprite.position = Vector2(-(c.x - 160.0) * BG_PARALLAX, -14.0 - (c.y - 90.0) * _bg_py)
 	_parallax.update(c)
+	_par_extra.update_layers(c, delta)
 
 	_update_hints()
 
@@ -419,6 +421,9 @@ func _build_background() -> void:
 	_bg_sprite.position = Vector2(0, -14)
 	_bg_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	layer.add_child(_bg_sprite)
+	_par_extra = preload("res://scripts/parallax_extra.gd").new()
+	add_child(_par_extra)
+	_par_extra.setup(Game.current, layer, _bg_py)
 	var bgfx := preload("res://scripts/bg_fx.gd").new()
 	_bg_sprite.add_child(bgfx)
 	_parallax = preload("res://scripts/parallax_layers.gd").new()

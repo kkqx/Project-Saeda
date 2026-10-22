@@ -177,3 +177,6 @@ Em **OPÇÕES → TECLAS** dá para trocar as teclas de andar, pular, dash e vol
 
 ## Parallax em camadas
 `scripts/parallax_layers.gd` acrescenta por fase 3 faixas de silhuetas que repetem na horizontal (a = mais longe, c = mais perto, cada uma anda mais rápido) e uma camada na frente do cenário (cipós, cabos, névoa) que anda mais rápido que o chão. As imagens ficam em `assets/bg/layers/<fase>_<a|b|c|fg>.png` (512 px de largura, emendam nas bordas). Os fatores de velocidade estão em `CFG` no script.
+
+## Paralaxe extra
+`scripts/parallax_extra.gd` soma duas camadas às de `parallax_layers.gd`: **far** (nuvens distantes que andam sozinhas, `assets/bg/layers/N_far.png`) e **mid** (silhuetas afastadas, `N_mid.png`). Ordem de profundidade, do fundo para a frente: imagem de fundo (0,25) → far (0,10 + deriva) → mid (0,30) → faixas a/b/c (0,36 / 0,50 / 0,70) → chão (1,0) → camada fg (1,35). Quanto maior o fator, mais rápido a camada passa quando a câmera anda.

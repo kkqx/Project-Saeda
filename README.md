@@ -165,3 +165,8 @@ O ícone do projeto (lista de projetos da Godot, janela e .exe) é `icon.png`, f
 
 ## Teclas
 Em **OPÇÕES → TECLAS** dá para trocar as teclas de andar, pular, dash e voltar ao checkpoint (`scripts/keys_menu.gd`). Se a tecla escolhida já é de outra ação, as duas trocam. As escolhas ficam salvas em `user://settings.cfg`; "Restaurar padrão" volta tudo. O controle (joystick) não muda.
+
+## Ambiente das fases (vento e partículas)
+- `scripts/ambient_fx.gd`: atmosfera por fase em cima do cenário. Praia: areia levada pelo vento e raios de luz. Torres: brasas e cinzas subindo, névoa. Pontes: folhas no vento, névoa e luz. Cidade: garoa e névoa fria. Montanha: luzinhas flutuando e raios quentes do pôr do sol. Uma "rajada" global (`gust()`) vai e volta, e risquinhos de vento aparecem quando ela é forte. A câmera arrasta as partículas, então elas parecem ter profundidade.
+- `scripts/grass_sway.gd`: matinho no topo dos blocos, balança com o vento e se curva quando a Saeda passa. Cores por fase no dicionário `COLORS`.
+- Para mudar um tema, edite `THEMES` em `ambient_fx.gd` (tipo, quantidade, cor, raios de luz, risquinhos, névoa).

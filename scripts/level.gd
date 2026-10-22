@@ -53,6 +53,8 @@ var _finished_at_ms := 0
 var _shake := 0.0
 var _hints: Array[String] = []
 var _last_tick := -1
+var _grass: Node2D
+var _ambient: CanvasLayer
 var _hint_labels: Array[Label] = []
 var _tile_scene: Node        # cena TileMap carregada (se a fase for .tscn)
 var _solid_body: StaticBody2D
@@ -89,8 +91,11 @@ func _ready() -> void:
 		return
 	_build_background()
 	_build_world()
+	_grass = preload("res://scripts/grass_sway.gd").new()
+	add_child(_grass)
 	_spawn_player()
 	_build_camera()
+	_build_ambient()
 	_build_atmosphere()
 	_build_hud()
 	_build_hints()
@@ -386,6 +391,14 @@ func _build_background() -> void:
 	_bg_sprite.position = Vector2(0, -14)
 	_bg_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	layer.add_child(_bg_sprite)
+
+
+## Vento, partículas, raios de luz e matinho balançando (muda em cada fase).
+func _build_ambient() -> void:
+	_ambient = preload("res://scripts/ambient_fx.gd").new()
+	add_child(_ambient)
+	_ambient.setup(self)
+	_grass.setup(self, _ambient)
 
 
 func _build_atmosphere() -> void:

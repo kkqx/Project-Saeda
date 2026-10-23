@@ -66,7 +66,6 @@ var _p_moss_dark := COL_MOSS_DARK
 
 var _grass: Node2D
 var _parallax: Node
-var _par_extra: Node
 var _ambient: CanvasLayer
 var _hint_labels: Array[Label] = []
 var _tile_scene: Node        # cena TileMap carregada (se a fase for .tscn)
@@ -140,9 +139,8 @@ func _process(delta: float) -> void:
 
 	# fundo em parallax
 	var c := camera.get_screen_center_position()
-	_bg_sprite.position = Vector2(-(c.x - 160.0) * BG_PARALLAX, -14.0 - (c.y - 90.0) * _bg_py)
+	_bg_sprite.position = Vector2(-(c.x - 160.0) * BG_PARALLAX, -14.0 + _parallax.sink(c.y, BG_PARALLAX))
 	_parallax.update(c)
-	_par_extra.update_layers(c, delta)
 
 	_update_hints()
 
@@ -410,6 +408,15 @@ func _build_background() -> void:
 	add_child(layer)
 	var sky := ColorRect.new()
 	sky.color = Game.LEVELS[Game.current].get("sky", Color("5d8fb8"))
+	var bg_img: Image = load(Game.LEVELS[Game.current].get("bg", "res://assets/bg/ruins_bg.png")).get_image()
+	if bg_img != null and not bg_img.is_empty():
+		# o que aparece acima do fundo quando ele afunda tem a cor da linha de cima da imagem
+		var acc := Color(0, 0, 0, 1)
+		for x in range(0, bg_img.get_width(), 8):
+			var px := bg_img.get_pixel(x, 0)
+			acc = Color(acc.r + px.r, acc.g + px.g, acc.b + px.b, 1)
+		var n := float(ceili(bg_img.get_width() / 8.0))
+		sky.color = Color(acc.r / n, acc.g / n, acc.b / n)
 	sky.set_anchors_preset(Control.PRESET_FULL_RECT)
 	sky.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(sky)
@@ -421,14 +428,11 @@ func _build_background() -> void:
 	_bg_sprite.position = Vector2(0, -14)
 	_bg_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	layer.add_child(_bg_sprite)
-	_par_extra = preload("res://scripts/parallax_extra.gd").new()
-	add_child(_par_extra)
-	_par_extra.setup(Game.current, layer, _bg_py)
 	var bgfx := preload("res://scripts/bg_fx.gd").new()
 	_bg_sprite.add_child(bgfx)
 	_parallax = preload("res://scripts/parallax_layers.gd").new()
 	add_child(_parallax)
-	_parallax.setup(layer, self)
+	_parallax.setup(layer, self, float(rows * TILE))
 
 
 ## Vento, partículas, raios de luz e matinho balançando (muda em cada fase).

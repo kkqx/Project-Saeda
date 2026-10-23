@@ -139,7 +139,7 @@ func _process(delta: float) -> void:
 
 	# fundo em parallax
 	var c := camera.get_screen_center_position()
-	_bg_sprite.position = Vector2(-(c.x - 160.0) * BG_PARALLAX, -14.0 - (c.y - 90.0) * _bg_py)
+	_bg_sprite.position = Vector2(-(c.x - 160.0) * BG_PARALLAX, -14.0 + _parallax.sink(c.y, BG_PARALLAX))
 	_parallax.update(c)
 
 	_update_hints()
@@ -408,6 +408,15 @@ func _build_background() -> void:
 	add_child(layer)
 	var sky := ColorRect.new()
 	sky.color = Game.LEVELS[Game.current].get("sky", Color("5d8fb8"))
+	var bg_img: Image = load(Game.LEVELS[Game.current].get("bg", "res://assets/bg/ruins_bg.png")).get_image()
+	if bg_img != null and not bg_img.is_empty():
+		# o que aparece acima do fundo quando ele afunda tem a cor da linha de cima da imagem
+		var acc := Color(0, 0, 0, 1)
+		for x in range(0, bg_img.get_width(), 8):
+			var px := bg_img.get_pixel(x, 0)
+			acc = Color(acc.r + px.r, acc.g + px.g, acc.b + px.b, 1)
+		var n := float(ceili(bg_img.get_width() / 8.0))
+		sky.color = Color(acc.r / n, acc.g / n, acc.b / n)
 	sky.set_anchors_preset(Control.PRESET_FULL_RECT)
 	sky.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(sky)
@@ -423,7 +432,7 @@ func _build_background() -> void:
 	_bg_sprite.add_child(bgfx)
 	_parallax = preload("res://scripts/parallax_layers.gd").new()
 	add_child(_parallax)
-	_parallax.setup(layer, self)
+	_parallax.setup(layer, self, float(rows * TILE))
 
 
 ## Vento, partículas, raios de luz e matinho balançando (muda em cada fase).
